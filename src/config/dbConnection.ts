@@ -1,14 +1,13 @@
-import mongoose from "mongoose";
-import { config } from "./env";
+import mongoose from 'mongoose'
+import { config } from './env'
 
-const connectToDB = async () =>{
+const connectToDB = async () => {
     try {
-       await mongoose.connect(config.mongoUri); 
-       console.log('database connected successfully')
+        await mongoose.connect(config.mongoUri)
+        console.log('database connected successfully')
     } catch (error) {
-       console.log('error coonnecting to database') 
+        console.log('error coonnecting to database')
     }
-    
 }
 
-export default connectToDB;
+export default connectToDB

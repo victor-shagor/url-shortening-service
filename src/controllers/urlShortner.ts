@@ -1,7 +1,6 @@
-
 import { nanoid } from 'nanoid'
-import { Url, UrlModel } from '../models/Urls';
-import { config } from '../config/env';
+import { UrlModel } from '../models/Urls'
+import { config } from '../config/env'
 
 /**
  * Helps encode a url and save url to the database
@@ -9,13 +8,13 @@ import { config } from '../config/env';
  * @returns {string} - A short url of the provided url
  */
 export const encode = async (url: string): Promise<string> => {
-    const urlExist = await UrlModel.findOne({originalUrl: url})
+    const urlExist = await UrlModel.findOne({ originalUrl: url })
 
-    if(urlExist){
+    if (urlExist) {
         return urlExist.shortUrl
     }
 
-    const hostUrl = config.hostUrl 
+    const hostUrl = config.hostUrl
     const urlPath = nanoid(6)
     const shortUrl = `${hostUrl}/${urlPath}`
 
@@ -23,7 +22,7 @@ export const encode = async (url: string): Promise<string> => {
         originalUrl: url,
         urlPath,
         shortUrl,
-      });
-  
-      return newUrl.shortUrl;
+    })
+
+    return newUrl.shortUrl
 }

@@ -5,9 +5,9 @@
  */
 export const validateUrl = (url: string): boolean => {
     try {
-      new URL(url);
-      return true;
+        new URL(url)
+        return true
     } catch (err) {
-      return false;
+        return false
     }
-   }
+}
