@@ -6,6 +6,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 describe('routes', () => {
     let mongoServer: MongoMemoryServer
     let shortUrl: string
+    let urlPath: string
     beforeAll(async () => {
         mongoServer = await MongoMemoryServer.create()
 
@@ -35,6 +36,8 @@ describe('routes', () => {
             })
 
             shortUrl = res.body.data.shortUrl
+            const { pathname } = new URL(res.body.data.shortUrl)
+            urlPath = pathname.substring(1)
 
             expect(res.status).toEqual(201)
             expect(res.body).toHaveProperty('data')
@@ -67,6 +70,16 @@ describe('routes', () => {
         })
     })
 
+    describe('stat route', () => {
+        it('should return path url data', async () => {
+            const res = await request(app).get(`/api/statistic/${urlPath}`)
+
+            expect(res.status).toEqual(200)
+            expect(res.body).toHaveProperty('data')
+            expect(res.body.message).toBe('stat fetched succesfully')
+        })
+    })
+
     describe('simulating a 500 error', () => {
         beforeAll(async () => {
             await mongoose.connection.close()
@@ -83,6 +96,16 @@ describe('routes', () => {
         })
         it('should return original url', async () => {
             const res = await request(app).get(`/api/decode?url=${shortUrl}`)
+
+            expect(res.status).toEqual(500)
+            expect(res.body).toHaveProperty('error')
+            expect(res.body.message).toBe(
+                'Something went wrong, try again later'
+            )
+        })
+
+        it('should return original url', async () => {
+            const res = await request(app).get(`/api/statistic/gtauy`)
 
             expect(res.status).toEqual(500)
             expect(res.body).toHaveProperty('error')
