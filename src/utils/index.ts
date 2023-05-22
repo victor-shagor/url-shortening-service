@@ -1,3 +1,9 @@
+/**
+ * custom error class
+ * @param {string} message - error message
+ * @param {number} statusCode - error code
+ * @returns {object} - returns error object of message and status code
+ */
 export class HttpError extends Error {
     statusCode = 400
     constructor(message: string, status: number) {
@@ -6,6 +12,11 @@ export class HttpError extends Error {
     }
 }
 
+/**
+ * custom error class
+ * @param {object} error - error object
+ * @returns {object} - returns error object of message and status code
+ */
 export const ErrorResponseObject = (error: any) => {
     if (error instanceof HttpError) {
         const { message, statusCode } = error
