@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { decode, encode } from '../controllers/urlShortner'
+import { decode, encode, statistics } from '../controllers/urlShortner'
 import { validateUrl } from '../utils/validations'
 import { ErrorResponseObject } from '../utils'
 
@@ -35,11 +35,30 @@ router.get('/decode', async (req: Request, res: Response) => {
         //validate url provided
         validateUrl(url)
 
-        //create and return short url
+        //get and return original url
         const originalUrl = await decode(url)
         return res.status(200).json({
             message: 'original url fetched succesfully',
             data: { originalUrl },
+        })
+    } catch (error) {
+        //catch and return error
+        const { message, statusCode } = ErrorResponseObject(error)
+        return res.status(statusCode).json({
+            message,
+            error: true,
+        })
+    }
+})
+
+router.get('/statistic/:url_path', async (req: Request, res: Response) => {
+    try {
+        const { url_path } = req.params
+
+        const data = await statistics(url_path)
+        return res.status(200).json({
+            message: 'stat fetched succesfully',
+            data,
         })
     } catch (error) {
         //catch and return error

@@ -1,4 +1,4 @@
-import { decode, encode } from '../controllers/urlShortner'
+import { decode, encode, statistics } from '../controllers/urlShortner'
 import { UrlModel } from '../models/Urls'
 
 UrlModel.create = jest.fn() as jest.Mock
@@ -55,6 +55,28 @@ describe('app controller', () => {
             await expect(() =>
                 decode('https://www.nothing.com/')
             ).rejects.toThrow()
+        })
+    })
+
+    describe('statistic controller', () => {
+        it('should return path data', async () => {
+            UrlModel.findOne = jest.fn().mockResolvedValue({
+                _id: '65d9c18fe68b3a5a7ea81042',
+                visit: 0,
+                shortUrl: 'https://localhost:5000/short',
+                originalUrl: 'https://www.examples.com/',
+            })
+            await expect(statistics('short')).resolves.toEqual({
+                _id: '65d9c18fe68b3a5a7ea81042',
+                visit: 0,
+                shortUrl: 'https://localhost:5000/short',
+                originalUrl: 'https://www.examples.com/',
+            })
+        })
+
+        it('should throw error if path url does not exist in the db', async () => {
+            UrlModel.findOne = jest.fn().mockResolvedValue(null)
+            await expect(() => statistics('Qfrukj')).rejects.toThrow()
         })
     })
 })
