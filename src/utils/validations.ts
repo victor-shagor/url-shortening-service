@@ -1,3 +1,5 @@
+import { HttpError } from '.'
+
 /**
  * validates url string
  * @param {string} url - original url to be encoded
@@ -8,6 +10,6 @@ export const validateUrl = (url: string): boolean => {
         new URL(url)
         return true
     } catch (err) {
-        return false
+        throw new HttpError('please provide a valid url', 400)
     }
 }
