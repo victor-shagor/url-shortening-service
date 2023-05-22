@@ -8,9 +8,7 @@ import { config } from './config/env'
 const app = express()
 const port = config.port || 5000
 
-if (process.env.NODE_ENV !== 'test') {
-    connectToDB()
-}
+connectToDB()
 
 app.use(cors())
 app.use(

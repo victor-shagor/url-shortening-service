@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid'
 import { UrlModel } from '../models/Urls'
 import { config } from '../config/env'
+import { HttpError } from '../utils'
 
 /**
  * Helps encode a url and save url to the database
@@ -25,4 +26,19 @@ export const encode = async (url: string): Promise<string> => {
     })
 
     return newUrl.shortUrl
+}
+
+/**
+ * Helps encode a url and save url to the database
+ * @param {string} url - short url to be decoded
+ * @returns {string} - the original url of the provided short url
+ */
+export const decode = async (url: string): Promise<string> => {
+    const urlExist = await UrlModel.findOne({ shortUrl: url })
+
+    if (urlExist) {
+        return urlExist.originalUrl
+    }
+
+    throw new HttpError('url not found', 404)
 }
