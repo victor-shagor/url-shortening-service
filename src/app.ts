@@ -2,9 +2,16 @@ import express from "express";
 import cors from "cors";
 
 import apiRoute from "./routes";
+import connectToDB from "./config/dbConnection";
+import { config } from "./config/env";
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = config.port || 5000;
+
+
+if(process.env.NODE_ENV !== 'test'){
+    connectToDB()
+}
 
 app.use(cors());
 app.use(
@@ -21,12 +28,11 @@ app.listen(port, () => {
 app.use("/api", apiRoute);
 
 
-app.get('/', (req, res) => res.status(200).send({ success: true, message: 'Welcome to url shortener api' }));
+app.get('/', (req, res) => res.status(200).send({ message: 'Welcome to url shortener api' }));
 
 app.use("*", (req, res) =>
-  res.status(404).json({
-    success: false,
-    error: "route not found",
+  res.status(404).send({
+    message: "route not found",
   })
 );
 
